@@ -1,142 +1,139 @@
-# API du Backend de NavMtl
+# NAV MTL Backend
 
-## Auteurs
+NAV MTL is a parking-assistance application built to help drivers navigate Montréal parking restrictions.
 
-👤 **Marvens Chery** , **Christopher Trang**
+This repository contains the **backend API** of the project. The original Android frontend is no longer available in this repository, but the GIF below demonstrates the application in use.
 
-- Linkedin: [@marvenschery](https://www.linkedin.com/in/marvenschery/)
-- Github: [@MarvensChery](https://github.com/MarvensChery) , [@christrang](https://github.com/christrang)
-### En cas de question, n'hésitez pas à me contacter.
 ![ezgif com-video-to-gif](https://github.com/MarvensChery/NavMtl-Backend/assets/104527699/8a02cd79-7363-4aca-bad8-609432711d8b)
+
+## Features
+
+The backend supported features including:
+
+* User authentication with JWT
+* User profiles
+* Parking history
+* Favorite locations
+* Parking alerts
+* User settings
+* Friend requests and friendships
+* User location data
+* Communication with the NAV MTL Android application
+
+## Tech Stack
+
+### Backend
+
+* Node.js
+* Express.js
+* JavaScript
+
+### Database
+
+* Microsoft SQL Server
+* Knex.js
+
+### Authentication & Security
+
+* JSON Web Tokens (JWT)
+* bcrypt
+* dotenv
+* express-validator
+
+### Development Tools
+
+* ESLint
+* Airbnb JavaScript Style Guide
+
+## Architecture
+
+```text
+Android Application
+        |
+        | HTTP / REST
+        v
+Node.js + Express API
+        |
+        v
+Microsoft SQL Server
+```
+
+The Android application communicated with the backend through REST API endpoints for authentication, user data, saved locations, parking history, alerts, and social features.
+
+## Database
+
+The backend uses Microsoft SQL Server and includes tables for:
+
+* `utilisateur`
+* `favoris`
+* `history`
+* `parametre`
+* `alerte`
+* `friend`
+* `demandeAmis`
+* `friendship`
+
+Relationships between users, favorites, history, alerts, and friendships are maintained using foreign keys.
 
 ## Installation
 
-1. Clonez ce dépôt sur votre machine locale.
-2. Exécutez `npm install` pour installer les dépendances.
-3. Configurez votre base de données dans le module ".env".
-4. Assurez-vous d'avoir un secret sécurisé pour la génération de jetons JWT.
+Clone the repository:
 
-## Utilisation
-
-1. Télécharger les dépendance avec ` npm install`
-2. Exécutez l'application en utilisant `npm start`.
-3. Lints et fixes files ou bug `npm run lint`
-
-## Package.json
-
-```json
-{
-    "name": "basecodebackend",
-    "version": "1.0.0",
-    "description": "exemple API",
-    "main": "index.js",
-    "scripts": {
-        "start": "node index.js",
-        "lint": "npx eslint ./**/*.js --fix"
-    },
-    "author": "you",
-    "license": "ISC",
-    "dependencies": {
-        "bcrypt": "^5.1.1",
-        "body-parser": "^1.20.2",
-        "cors": "^2.8.5",
-        "dotenv": "^16.3.1",
-        "express": "^4.18.2",
-        "express-validator": "^7.0.1",
-        "jsonwebtoken": "9.0.2",
-        "knex": "2.5.1",
-        "mssql": "^10.0.0"
-    },
-    "devDependencies": {
-        "eslint": "^8.49.0",
-        "eslint-config-airbnb-base": "^15.0.0",
-        "eslint-plugin-import": "^2.28.1"
-    }
-}
+```bash
+git clone https://github.com/MarvensChery/NavMtl-Backend.git
+cd NavMtl-Backend
 ```
-# La création de la base de donnée
-``` sql
-create database navMtl
 
-CREATE TABLE utilisateur (
-    userID INT IDENTITY(1,1) PRIMARY KEY,
-    nom VARCHAR(255) NOT NULL,
-    prenom VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    mdp VARCHAR(255) NOT NULL,
-    number INT NOT NULL,
-    pfp varbinary(max) NULL,
-    lat VARCHAR(255) NULL,
-    long VARCHAR(255) NULL
-);
+Install dependencies:
 
-
-CREATE TABLE favoris (
-    favorisID INT IDENTITY(1,1) PRIMARY KEY,
-    userID INT NOT NULL,
-    titre VARCHAR(255) NULL,
-    addresse VARCHAR(255) NOT NULL,
-    FOREIGN KEY (userID) REFERENCES utilisateur(userID)
-);
-
-
-CREATE TABLE history (
-    historyID INT IDENTITY(1,1) PRIMARY KEY,
-    userID INT NOT NULL,
-    temps DATETIME NOT NULL,
-    addresse VARCHAR(255) NOT NULL,
-    FOREIGN KEY (userID) REFERENCES utilisateur(userID)
-);
-
-
-CREATE TABLE parametre (
-    parametreID INT IDENTITY(1,1) PRIMARY KEY,
-    userID INT NOT NULL,
-    parametre VARCHAR(255) NOT NULL,
-    valeur VARCHAR(255) NOT NULL,
-    FOREIGN KEY (userID) REFERENCES utilisateur(userID)
-);
-
-
-CREATE TABLE alerte (
-    alerteID INT IDENTITY(1,1) PRIMARY KEY,
-    userID INT NOT NULL,
-    contenu VARCHAR(255) NOT NULL,
-    temps DATETIME NOT NULL,
-    lu BIT NOT NULL,
-    FOREIGN KEY (userID) REFERENCES utilisateur(userID)
-);
-
-CREATE TABLE friend (
-    friendID INT IDENTITY(1,1) PRIMARY KEY,
-    nom VARCHAR(255) NOT NULL,
-    prenom VARCHAR(255) NOT NULL,
-    lat VARCHAR(255) NULL,
-    long VARCHAR(255) NULL
-);
-
-CREATE TABLE demandeAmis (
-    demandeID INT IDENTITY(1,1) PRIMARY KEY,
-    expediteurID INT NOT NULL,
-    destinataireID INT NOT NULL,
-    etat VARCHAR(255) NOT NULL,
-    date_demande DATETIME NOT NULL,
-    FOREIGN KEY (expediteurID) REFERENCES utilisateur(userID),
-    FOREIGN KEY (destinataireID) REFERENCES utilisateur(userID)
-);
-
-
-CREATE TABLE friendship (
-    friendshipID INT IDENTITY(1,1) PRIMARY KEY,
-    friendID INT NOT NULL,
-    userID INT NOT NULL,
-    FOREIGN KEY (friendID) REFERENCES friend(friendID),
-    FOREIGN KEY (userID) REFERENCES utilisateur(userID)
-);
-
-
--- CREATE LOGIN marvens   
-   -- WITH PASSWORD = '1234mdp';  
---GO 
---CREATE USER marvens FOR LOGIN marvens;
+```bash
+npm install
 ```
+
+Create a `.env` file and configure the required environment variables for the database connection and JWT authentication.
+
+Then start the server:
+
+```bash
+npm start
+```
+
+## Linting
+
+Run ESLint and automatically fix supported issues:
+
+```bash
+npm run lint
+```
+
+## Main Dependencies
+
+* `express`
+* `mssql`
+* `knex`
+* `jsonwebtoken`
+* `bcrypt`
+* `express-validator`
+* `dotenv`
+* `cors`
+
+## Project Context
+
+NAV MTL was developed as a collaborative software project.
+
+The complete application originally included an Android frontend with an interactive map and parking-related functionality. This repository preserves the backend portion of the project.
+
+## Authors
+
+**Marvens Chery**
+
+* [LinkedIn](https://www.linkedin.com/in/marvenschery/)
+* [GitHub](https://github.com/MarvensChery)
+
+**Christopher Trang**
+
+* [GitHub](https://github.com/christrang)
+
+## Security
+
+Sensitive configuration such as database credentials and JWT secrets should be stored in environment variables and must not be committed to the repository.
